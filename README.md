@@ -34,7 +34,7 @@ cp .env.example .env
 docker compose up --build
 ```
 
-Uygulama: http://localhost:3000
+Uygulama: http://localhost:3000 (Docker) veya http://localhost:3001 (yerel dev)
 
 ### Yerel Geliştirme
 

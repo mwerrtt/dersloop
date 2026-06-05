@@ -2,7 +2,7 @@ const { app, BrowserWindow, shell, Menu } = require("electron");
 const path = require("path");
 
 const isDev = !app.isPackaged;
-const WEB_URL = process.env.DERSLOOP_URL || "http://localhost:3000";
+const WEB_URL = process.env.DERSLOOP_URL || "http://localhost:3001";
 
 function createWindow() {
   const win = new BrowserWindow({
