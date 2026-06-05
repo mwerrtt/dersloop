@@ -24,12 +24,12 @@ services:
     container_name: dersloop-web
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       DATABASE_URL: postgresql://dersloop:dersloop123@postgres:5432/dersloop?schema=public
       JWT_SECRET: dersloop-docker-jwt-secret
       AI_PROVIDER: mock
-      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_APP_URL: http://localhost:3001
     volumes:
       - uploads_data:/app/apps/web/uploads
     depends_on:

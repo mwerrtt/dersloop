@@ -1,0 +1,12 @@
+node_modules
+.next
+dist
+release
+.git
+.env
+.env.*
+apps/web/uploads/*
+!apps/web/uploads/.gitkeep
+*.log
+.DS_Store
+apps/desktop/release
