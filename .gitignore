@@ -1,0 +1,17 @@
+node_modules
+.next
+dist
+out
+build
+*.log
+.env
+.env.local
+.env*.local
+packages/database/.env
+apps/web/.env
+uploads/*
+!uploads/.gitkeep
+.DS_Store
+*.tsbuildinfo
+release
+electron-dist

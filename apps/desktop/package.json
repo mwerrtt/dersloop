@@ -1,0 +1,39 @@
+{
+  "name": "@dersloop/desktop",
+  "version": "1.0.0",
+  "private": true,
+  "main": "main.js",
+  "scripts": {
+    "dev": "electron .",
+    "build:desktop": "electron-builder --mac --win --publish never",
+    "build:mac": "electron-builder --mac --publish never",
+    "build:win": "electron-builder --win --publish never"
+  },
+  "dependencies": {
+    "electron-is-dev": "^3.0.1"
+  },
+  "devDependencies": {
+    "electron": "^35.1.2",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "app.dersloop.desktop",
+    "productName": "DersLoop",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "icon.png"
+    ],
+    "mac": {
+      "category": "public.app-category.education",
+      "icon": "icon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "icon.png"
+    }
+  }
+}

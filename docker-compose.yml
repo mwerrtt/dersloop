@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: dersloop-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dersloop
+      POSTGRES_PASSWORD: dersloop123
+      POSTGRES_DB: dersloop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dersloop -d dersloop"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dersloop-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://dersloop:dersloop123@postgres:5432/dersloop?schema=public
+      JWT_SECRET: dersloop-docker-jwt-secret
+      AI_PROVIDER: mock
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+    volumes:
+      - uploads_data:/app/apps/web/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  uploads_data:

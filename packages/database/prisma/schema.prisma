@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum CourseStatus {
+  DRAFT
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum FileStatus {
+  UPLOADED
+  EXTRACTING
+  EXTRACTED
+  FAILED
+}
+
+enum AiLogStatus {
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  role         Role     @default(USER)
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  courses       Course[]
+  uploadedFiles UploadedFile[]
+  aiLogs        AiLog[]
+  savedCards    SavedCard[]
+
+  @@map("users")
+}
+
+model Course {
+  id          String       @id @default(cuid())
+  userId      String       @map("user_id")
+  title       String
+  description String?
+  category    String?
+  status      CourseStatus @default(DRAFT)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  uploadedFiles  UploadedFile[]
+  generatedLessons GeneratedLesson[]
+
+  @@map("courses")
+}
+
+model UploadedFile {
+  id            String     @id @default(cuid())
+  courseId      String     @map("course_id")
+  userId        String     @map("user_id")
+  fileName      String     @map("file_name")
+  fileType      String     @map("file_type")
+  filePath      String     @map("file_path")
+  fileSize      Int        @map("file_size")
+  extractedText String?    @map("extracted_text") @db.Text
+  status        FileStatus @default(UPLOADED)
+  createdAt     DateTime   @default(now()) @map("created_at")
+
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("uploaded_files")
+}
+
+model GeneratedLesson {
+  id        String   @id @default(cuid())
+  courseId  String   @map("course_id")
+  title     String
+  summary   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+
+  course     Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  videoCards VideoCard[]
+  podcasts   Podcast[]
+
+  @@map("generated_lessons")
+}
+
+model VideoCard {
+  id              String   @id @default(cuid())
+  lessonId        String   @map("lesson_id")
+  title           String
+  content         String   @db.Text
+  keyPoint        String   @map("key_point")
+  durationSeconds Int      @map("duration_seconds")
+  orderIndex      Int      @map("order_index")
+  visualHint      String?  @map("visual_hint")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  lesson     GeneratedLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  savedCards SavedCard[]
+
+  @@map("video_cards")
+}
+
+model Podcast {
+  id              String   @id @default(cuid())
+  lessonId        String   @map("lesson_id")
+  title           String
+  script          String   @db.Text
+  audioUrl        String?  @map("audio_url")
+  durationSeconds Int      @map("duration_seconds")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  lesson GeneratedLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@map("podcasts")
+}
+
+model SavedCard {
+  id          String   @id @default(cuid())
+  userId      String   @map("user_id")
+  videoCardId String   @map("video_card_id")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videoCard VideoCard @relation(fields: [videoCardId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, videoCardId])
+  @@map("saved_cards")
+}
+
+model AiLog {
+  id           String      @id @default(cuid())
+  userId       String?     @map("user_id")
+  action       String
+  status       AiLogStatus
+  inputTokens  Int?        @map("input_tokens")
+  outputTokens Int?        @map("output_tokens")
+  errorMessage String?     @map("error_message") @db.Text
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("ai_logs")
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("settings")
+}
