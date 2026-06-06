@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Logo } from "@/components/Logo";
-import { GradientBlob } from "@/components/GradientBlob";
 import { Play, Zap, Headphones, ArrowRight } from "lucide-react";
 
 const features = [
@@ -27,8 +26,6 @@ const features = [
 export default function LandingPage() {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <GradientBlob />
-
       <header className="relative z-10 flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
         <Logo />
         <div className="flex items-center gap-3">

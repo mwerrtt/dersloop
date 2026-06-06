@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { InteractiveBackground } from "@/components/InteractiveBackground";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -30,8 +31,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
+      <body className={`${inter.variable} font-sans antialiased bg-transparent`}>
+        <InteractiveBackground />
+        <div className="relative z-[1] min-h-screen">{children}</div>
       </body>
     </html>
   );

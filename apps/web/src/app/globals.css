@@ -5,6 +5,8 @@
 :root {
   --background: #0a0a12;
   --foreground: #f8fafc;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
 }
 
 * {
@@ -13,10 +15,11 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--background);
 }
 
 body {
-  background: var(--background);
+  background: transparent;
   color: var(--foreground);
   min-height: 100vh;
 }
